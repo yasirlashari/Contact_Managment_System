@@ -1,24 +1,25 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Create = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const header = { "Access-Control-Allow-Origin": "*" };
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // Prevents page from refreshing
-    console.log("Form submitted:", name, email);
+    e.preventDefault();
+    if (!name || !email) {
+      alert('Please fill in all fields');
+      return;
+    }
 
-    // Make POST request using axios
     axios.post("https://67065041a0e04071d2265124.mockapi.io/crudapp", {
       name: name,
       email: email,
-      header,
     })
       .then(response => {
-        console.log('Data successfully submitted:', response.data);
-        // You can also reset the form or display a success message here
+        navigate('/read');
       })
       .catch(error => {
         console.error('There was an error!', error);
@@ -26,15 +27,15 @@ const Create = () => {
   };
 
   return (
-    <>
-      <h2>Create</h2>
+    <div className="card p-4">
+      <h2>Create Record</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label className="form-label">Name</label>
           <input
             type="text"
             className="form-control"
-            value={name} // bind value to state
+            value={name}
             onChange={(e) => setName(e.target.value)}
           />
         </div>
@@ -44,15 +45,14 @@ const Create = () => {
           <input
             type="email"
             className="form-control"
-            value={email} // bind value to state
+            value={email}
             onChange={(e) => setEmail(e.target.value)}
-            aria-describedby="emailHelp"
           />
         </div>
 
         <button type="submit" className="btn btn-primary">Submit</button>
       </form>
-    </>
+    </div>
   );
 };
 
